@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" height="30" overflow="visible" preserveAspectRatio="none" style="display: block;" viewBox="0 0 30 30" width="30">
+<g id="slider button">
+<circle cx="15" cy="15" fill="white" id="Ellipse" r="14" stroke="#FF5EC4" stroke-width="2"/>
+<g id="CaretUpDown">
+<g id="Vector">
+</g>
+<path d="M18.375 18.375L21.75 15L18.375 11.625" id="Vector_2" stroke="#060419" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+<path d="M11.625 18.375L8.25 15L11.625 11.625" id="Vector_3" stroke="#060419" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+</g>
+</g>
+</svg>

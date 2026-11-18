@@ -1,0 +1,47 @@
+/* Custom utilities & resets */
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #060419;
+  color: #ffffff;
+  font-family: var(--font-satoshi), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar for clean horizontal tickers while keeping scrollability */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 3D button custom shadow animations */
+.custom-box-shadow-button {
+  transition: transform 0.125s ease-out;
+  overflow: visible;
+}
+.custom-box-shadow-button:hover {
+  transform: scale(1.02);
+}
+.custom-box-shadow-text,
+.custom-box-shadow-1,
+.custom-box-shadow-2 {
+  transform-style: flat;
+  transition: transform 0.125s ease-out;
+}
+.custom-box-shadow-button:hover .custom-box-shadow-text {
+  transform: translate(-6px, -6px);
+}
+.custom-box-shadow-button:hover .custom-box-shadow-1 {
+  transform: translate(6px, 6px);
+}
+.custom-box-shadow-button:hover .custom-box-shadow-2 {
+  transform: translate(3px, 3px);
+}

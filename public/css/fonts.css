@@ -1,0 +1,103 @@
+@font-face {
+  font-family: SatoshiFont;
+  src: url(/fonts/Satoshi_Light-s.p.40f53fa-bgouz.woff2) format("woff2");
+  font-display: swap;
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: SatoshiFont;
+  src: url(/fonts/Satoshi_Regular-s.p.2oultpqxb_gh9.woff2) format("woff2");
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: SatoshiFont;
+  src: url(/fonts/Satoshi_Medium-s.p.2gbh8zsgu5xby.woff2) format("woff2");
+  font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: SatoshiFont;
+  src: url(/fonts/Satoshi_Bold-s.p.19z5sx2nusz2v.woff2) format("woff2");
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: SatoshiFont;
+  src: url(/fonts/Satoshi_Black-s.p.03d7m3bcbsl0m.woff2) format("woff2");
+  font-display: swap;
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SatoshiFont Fallback";
+  src: local(Arial);
+  ascent-override: 102.23%;
+  descent-override: 24.29%;
+  line-gap-override: 10.12%;
+  size-adjust: 98.8%;
+}
+.lH6urq_className {
+  font-family: SatoshiFont, "SatoshiFont Fallback";
+}
+.lH6urq_variable {
+  --font-satoshi: "SatoshiFont", "SatoshiFont Fallback";
+}
+
+@font-face {
+  font-family: HauntedHillFont;
+  src: url(/fonts/HauntedHillSpooky_Spooky-s.p.0m8zc9ukyoou7.woff2) format("woff2");
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HauntedHillFont Fallback";
+  src: local(Arial);
+  ascent-override: 113.88%;
+  descent-override: 44.29%;
+  line-gap-override: 0.0%;
+  size-adjust: 79.03%;
+}
+._2jf5nG_className {
+  font-family: HauntedHillFont, "HauntedHillFont Fallback";
+}
+._2jf5nG_variable {
+  --haunted-hill-font-family: "HauntedHillFont", "HauntedHillFont Fallback";
+}
+
+@font-face {
+  font-family: ClashGroteskFont;
+  src: url(/fonts/ClashGrotesk_Bold-s.p.425v0mrw2cfn5.woff2) format("woff2");
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "ClashGroteskFont Fallback";
+  src: local(Arial);
+  ascent-override: 84.47%;
+  descent-override: 23.73%;
+  line-gap-override: 8.54%;
+  size-adjust: 105.37%;
+}
+.VGukua_className {
+  font-family: ClashGroteskFont, "ClashGroteskFont Fallback";
+}
+.VGukua_variable {
+  --clash-grotesk-font-family: "ClashGroteskFont", "ClashGroteskFont Fallback";
+}
+
+.clash-grotesk-font-family {
+  font-family: var(--clash-grotesk-font-family), sans-serif;
+}
+.haunted-hill-font-family {
+  font-family: var(--haunted-hill-font-family), cursive;
+}
+body {
+  font-family: var(--font-satoshi), sans-serif;
+}
