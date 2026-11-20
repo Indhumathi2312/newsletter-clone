@@ -140,8 +140,9 @@ export const FeatureTabs: React.FC = () => {
     setFlippedCard((current) => (current === id ? null : id));
   };
 
-  const row1Cards = cardConfigs.slice(0, 3);
-  const row2Cards = cardConfigs.slice(3, 6);
+  const row1Cards = [cardConfigs[0], cardConfigs[1]]; // Newsletters (flex 2), Podcasts (flex 1)
+  const row2Cards = [cardConfigs[2], cardConfigs[3]]; // Digital Products (flex 1), Monetization (flex 2)
+  const row3Cards = [cardConfigs[4], cardConfigs[5]]; // Community (flex 2), Websites (flex 1)
 
   const renderCard = (card: CardConfig, isMobile: boolean = false) => {
     const isFlipped = flippedCard === card.id;
@@ -345,14 +346,19 @@ export const FeatureTabs: React.FC = () => {
               className="hidden flex-col gap-4 md:flex md:gap-6"
               style={{ ['--pcs-row-max-h' as any]: '38rem' }}
             >
-              {/* Row 1: Newsletters (2), Podcasts (1), Digital Products (1) */}
+              {/* Row 1: Newsletters (2), Podcasts (1) */}
               <div className="flex h-[var(--pcs-row-max-h)] max-h-[var(--pcs-row-max-h)] shrink-0 flex-row items-stretch gap-6">
                 {row1Cards.map((c) => renderCard(c))}
               </div>
 
-              {/* Row 2: Monetization (2), Community (2), Websites (1) */}
+              {/* Row 2: Digital Products (1), Monetization (2) */}
               <div className="flex h-[var(--pcs-row-max-h)] max-h-[var(--pcs-row-max-h)] shrink-0 flex-row items-stretch gap-6">
                 {row2Cards.map((c) => renderCard(c))}
+              </div>
+
+              {/* Row 3: Community (2), Websites (1) */}
+              <div className="flex h-[var(--pcs-row-max-h)] max-h-[var(--pcs-row-max-h)] shrink-0 flex-row items-stretch gap-6">
+                {row3Cards.map((c) => renderCard(c))}
               </div>
             </div>
 
