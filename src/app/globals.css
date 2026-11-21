@@ -108,4 +108,45 @@ body {
   }
 }
 
+/* Infinite Smooth Continuous Ticker Marquee Carousel */
+@keyframes tickerAnimation {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes rightTickerAnimation {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.ticker-image-container {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  width: max-content;
+}
+
+.animate-ticker-left {
+  animation: tickerAnimation 40s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker-right {
+  animation: rightTickerAnimation 40s linear infinite;
+  will-change: transform;
+}
+
+.ticker-image-container:hover {
+  animation-play-state: paused;
+}
+
+
 

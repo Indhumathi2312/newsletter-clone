@@ -1,6 +1,6 @@
 import { TickerItem } from '../types';
 
-export const tickerItems: TickerItem[] = [
+export const row1Items: TickerItem[] = [
   {
     type: 'creator',
     data: {
@@ -13,12 +13,12 @@ export const tickerItems: TickerItem[] = [
   {
     type: 'stat',
     data: {
-      id: 'stat-blockworks',
+      id: 'stat-rally',
       stat: '3X',
       description: 'Higher conversion rate from newsletter readers',
-      logoSrc: '/images/Kqvm5zUJCSBbwlz1_blockworks.svg',
-      logoAlt: 'Blockworks',
-      caseStudyUrl: '/case-studies/blockworks',
+      logoSrc: '/images/image_1.jpg',
+      logoAlt: 'Rally',
+      caseStudyUrl: '/case-studies/rallyrd',
     },
   },
   {
@@ -33,12 +33,12 @@ export const tickerItems: TickerItem[] = [
   {
     type: 'stat',
     data: {
-      id: 'stat-milkroad',
+      id: 'stat-time',
       stat: '2M+',
       description: 'subscribers migrated, zero downtime',
-      logoSrc: '/images/Kqvm5zUJCSBbwlz1_blockworks.svg',
-      logoAlt: 'Milk Road',
-      caseStudyUrl: '/case-studies/milk-road',
+      logoSrc: '/images/image.webp',
+      logoAlt: 'TIME',
+      caseStudyUrl: '/case-studies/time',
     },
   },
   {
@@ -53,12 +53,12 @@ export const tickerItems: TickerItem[] = [
   {
     type: 'stat',
     data: {
-      id: 'stat-overstory',
+      id: 'stat-resume-worded',
       stat: '50–60%',
       description: 'open rates and strong CTR on active segments',
-      logoSrc: '/images/Kqvm5zUJCSBbwlz1_blockworks.svg',
-      logoAlt: 'Overstory Media Group',
-      caseStudyUrl: '/case-studies/overstory',
+      logoSrc: '/images/image_1.webp',
+      logoAlt: 'Resume Worded',
+      caseStudyUrl: '/case-studies/resume-worded',
     },
   },
   {
@@ -71,14 +71,19 @@ export const tickerItems: TickerItem[] = [
     },
   },
   {
-    type: 'creator',
+    type: 'stat',
     data: {
-      id: 'kat-norton',
-      name: 'Kat Norton',
-      publication: 'Miss Excel',
-      imageSrc: '/images/kat.png',
+      id: 'stat-blockworks',
+      stat: '7',
+      description: 'daily newsletters operated by dedicated teams',
+      logoSrc: '/images/Kqvm5zUJCSBbwlz1_blockworks.svg',
+      logoAlt: 'Blockworks',
+      caseStudyUrl: '/case-studies/blockworks',
     },
   },
+];
+
+export const row2Items: TickerItem[] = [
   {
     type: 'stat',
     data: {
@@ -87,16 +92,16 @@ export const tickerItems: TickerItem[] = [
       description: "open rate on The Boston Globe Media's B-Side newsletter",
       logoSrc: '/images/_7en1eRB-FzJ39tV_boston-globe.svg',
       logoAlt: 'The Boston Globe',
-      caseStudyUrl: '/case-studies/boston-globe',
+      caseStudyUrl: '/case-studies/b-side',
     },
   },
   {
     type: 'creator',
     data: {
-      id: 'victoria-christie',
-      name: 'Victoria Christie',
-      publication: 'Girlboss',
-      imageSrc: '/images/victoria.png',
+      id: 'kat-norton',
+      name: 'Kat Norton',
+      publication: 'Miss Excel',
+      imageSrc: '/images/kat.png',
     },
   },
   {
@@ -113,10 +118,10 @@ export const tickerItems: TickerItem[] = [
   {
     type: 'creator',
     data: {
-      id: 'colin-samir',
-      name: 'Colin & Samir',
-      publication: 'The Publish Press',
-      imageSrc: '/images/colin-samir-2.png',
+      id: 'victoria-christie',
+      name: 'Victoria Christie',
+      publication: 'Girlboss',
+      imageSrc: '/images/victoria.png',
     },
   },
   {
@@ -130,4 +135,16 @@ export const tickerItems: TickerItem[] = [
       caseStudyUrl: '/case-studies/los-angeles-magazine',
     },
   },
+  {
+    type: 'creator',
+    data: {
+      id: 'colin-samir',
+      name: 'Colin & Samir',
+      publication: 'The Publish Press',
+      imageSrc: '/images/colin-samir-2.png',
+    },
+  },
 ];
+
+// For backward compatibility
+export const tickerItems: TickerItem[] = [...row1Items, ...row2Items];
