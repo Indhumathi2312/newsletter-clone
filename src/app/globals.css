@@ -108,22 +108,22 @@ body {
   }
 }
 
-/* Infinite Smooth Continuous Ticker Marquee Carousel */
-@keyframes tickerAnimation {
+/* Dual Infinite Continuous Ticker Marquee Carousel (Opposite Directions) */
+@keyframes moveLeftToRight {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(-50%, 0, 0);
   }
   100% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
-@keyframes rightTickerAnimation {
+@keyframes moveRightToLeft {
   0% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -134,19 +134,24 @@ body {
   width: max-content;
 }
 
-.animate-ticker-left {
-  animation: tickerAnimation 40s linear infinite;
+/* Top Row: Continuously moves from LEFT TO RIGHT */
+.animate-ticker-left-to-right {
+  animation: moveLeftToRight 45s linear infinite;
+  transform: translate3d(-50%, 0, 0);
   will-change: transform;
 }
 
-.animate-ticker-right {
-  animation: rightTickerAnimation 40s linear infinite;
+/* Bottom Row: Continuously moves from RIGHT TO LEFT */
+.animate-ticker-right-to-left {
+  animation: moveRightToLeft 45s linear infinite;
+  transform: translate3d(0, 0, 0);
   will-change: transform;
 }
 
 .ticker-image-container:hover {
   animation-play-state: paused;
 }
+
 
 
 

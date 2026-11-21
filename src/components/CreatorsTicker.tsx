@@ -7,9 +7,9 @@ import { row1Items, row2Items } from '../data/creators';
 import { TickerItem } from '../types';
 
 export const CreatorsTicker: React.FC = () => {
-  // Seamless loop duplicates
-  const row1Marquee = [...row1Items, ...row1Items];
-  const row2Marquee = [...row2Items, ...row2Items];
+  // Quadruple items to guarantee a 100% seamless infinite loop with zero gaps even on 4K screens
+  const topRowMarquee = [...row1Items, ...row1Items, ...row1Items, ...row1Items];
+  const bottomRowMarquee = [...row2Items, ...row2Items, ...row2Items, ...row2Items];
 
   const renderCard = (item: TickerItem, key: string) => {
     if (item.type === 'creator') {
@@ -17,13 +17,17 @@ export const CreatorsTicker: React.FC = () => {
       return (
         <div
           key={key}
-          className="relative mx-2 h-[300px] w-[220px] flex-shrink-0 overflow-hidden rounded-xl md:mx-3 md:h-[425px] md:w-[308px]"
+          className="relative mx-2 h-[300px] w-[220px] flex-shrink-0 overflow-hidden rounded-xl md:mx-3 md:h-[425px] md:w-[308px] bg-[#0D0B28]"
         >
+          {/* Eager-loaded, unoptimized static image for 0ms initial render without blank state */}
           <Image
             src={imageSrc}
             alt={name}
             width={400}
             height={520}
+            loading="eager"
+            priority
+            unoptimized
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -49,6 +53,9 @@ export const CreatorsTicker: React.FC = () => {
             alt={logoAlt}
             width={202}
             height={32}
+            loading="eager"
+            priority
+            unoptimized
             className="h-8 w-auto max-w-full object-contain object-left"
           />
         </div>
@@ -109,17 +116,23 @@ export const CreatorsTicker: React.FC = () => {
                 'linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
             }}
           >
-            {/* Ticker Row 1 - scrolling left */}
+            {/* TOP ROW: Moves continuously from LEFT TO RIGHT */}
             <div className="ticker h-[300px] md:h-[425px] overflow-hidden">
-              <div className="ticker-image-container flex items-stretch animate-ticker-left">
-                {row1Marquee.map((item, idx) => renderCard(item, `r1-${idx}`))}
+              <div
+                className="ticker-image-container flex items-stretch animate-ticker-left-to-right"
+                style={{ transform: 'translate3d(-50%, 0, 0)' }}
+              >
+                {topRowMarquee.map((item, idx) => renderCard(item, `top-${idx}`))}
               </div>
             </div>
 
-            {/* Ticker Row 2 - scrolling right */}
+            {/* BOTTOM ROW: Moves continuously from RIGHT TO LEFT */}
             <div className="ticker h-[300px] md:h-[425px] overflow-hidden">
-              <div className="ticker-image-container flex items-stretch animate-ticker-right">
-                {row2Marquee.map((item, idx) => renderCard(item, `r2-${idx}`))}
+              <div
+                className="ticker-image-container flex items-stretch animate-ticker-right-to-left"
+                style={{ transform: 'translate3d(0, 0, 0)' }}
+              >
+                {bottomRowMarquee.map((item, idx) => renderCard(item, `bot-${idx}`))}
               </div>
             </div>
           </div>
