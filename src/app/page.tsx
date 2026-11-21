@@ -28,7 +28,7 @@ export default function HomePage() {
       {/* 5. Pricing Plans - Interactive Tier Slider & Cards */}
       <Pricing />
 
-      {/* 6. Featured Quote Showcase */}
+      {/* 6. Featured Quote Showcase - Interactive Testimonials Carousel */}
       <TestimonialQuote />
 
       {/* 7. Numbers Tell The Story - Metrics & Stats */}
