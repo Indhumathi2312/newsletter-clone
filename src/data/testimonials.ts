@@ -4,7 +4,7 @@ export interface TestimonialSlide {
   author: string;
   role: string;
   storyUrl: string;
-  avatar?: string | null;
+  avatar: string;
 }
 
 export const featuredTestimonials: TestimonialSlide[] = [
@@ -14,7 +14,7 @@ export const featuredTestimonials: TestimonialSlide[] = [
     author: "Chris Koerner",
     role: "Founder, Koerner Office",
     storyUrl: "/case-studies/koerner-office",
-    avatar: null,
+    avatar: "/images/profile.png",
   },
   {
     id: "matt-gross",
@@ -30,6 +30,6 @@ export const featuredTestimonials: TestimonialSlide[] = [
     author: "Kat Norton",
     role: "Ms. Excel",
     storyUrl: "/case-studies",
-    avatar: null,
+    avatar: "/images/kat.png",
   },
 ];
