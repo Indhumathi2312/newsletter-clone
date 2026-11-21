@@ -5,37 +5,10 @@ import Image from 'next/image';
 import { productCards, ProductCardData } from '../data/productFeatures';
 
 export const FeatureTabs: React.FC = () => {
-  // Each row tracks which container is currently large ('left' | 'right')
-  const [rowActiveSide, setRowActiveSide] = useState<{ [rowIdx: number]: 'left' | 'right' }>({
-    0: 'left',  // Row 1: Newsletters (left, flex 2) + Podcasts (right, flex 1)
-    1: 'right', // Row 2: Digital Products (left, flex 1) + Monetization (right, flex 2)
-    2: 'left',  // Row 3: Community (left, flex 2) + Websites (right, flex 1)
-  });
-
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
-  const handleCardClick = (rowIdx: number, side: 'left' | 'right', cardId: string) => {
-    // Left container click panna left large agi right small aagum,
-    // Right container click panna right large agi left small aagum.
-    setRowActiveSide((prev) => ({
-      ...prev,
-      [rowIdx]: side,
-    }));
-
-    // If the other container in the same row was flipped open, close its panel
-    if (expandedCardId && expandedCardId !== cardId) {
-      setExpandedCardId(null);
-    }
-  };
-
-  const handlePlusClick = (rowIdx: number, side: 'left' | 'right', cardId: string) => {
-    // Ensure this container is large
-    setRowActiveSide((prev) => ({
-      ...prev,
-      [rowIdx]: side,
-    }));
-    // Toggle the flipped details view
-    setExpandedCardId((current) => (current === cardId ? null : cardId));
+  const handleExpand = (id: string) => {
+    setExpandedCardId((current) => (current === id ? null : id));
   };
 
   const handleClose = () => {
@@ -43,24 +16,18 @@ export const FeatureTabs: React.FC = () => {
   };
 
   const rows: [ProductCardData, ProductCardData][] = [
-    [productCards[0], productCards[1]], // Newsletters, Podcasts
-    [productCards[2], productCards[3]], // Digital Products, Monetization
-    [productCards[4], productCards[5]], // Community, Websites
+    [productCards[0], productCards[1]], // Newsletters (2), Podcasts (1)
+    [productCards[2], productCards[3]], // Digital Products (1), Monetization (2)
+    [productCards[4], productCards[5]], // Community (2), Websites (1)
   ];
 
-  const renderCard = (
-    card: ProductCardData,
-    flexGrow: number,
-    rowIdx: number,
-    side: 'left' | 'right'
-  ) => {
+  const renderCard = (card: ProductCardData, flexGrow: number) => {
     const isExpanded = expandedCardId === card.id;
-    const isSmall = flexGrow === 1;
 
     return (
       <div
         key={card.id}
-        className={`product-card-flip-tile relative min-h-0 min-w-0 overflow-hidden rounded-xl border border-subtle bg-[#0D0B28] cursor-pointer transition-all duration-300 hover:border-white/20`}
+        className="product-card-flip-tile relative min-h-0 min-w-0 overflow-hidden rounded-xl border border-subtle bg-[#0D0B28]"
         data-card-id={card.id}
         data-flex={flexGrow}
         style={{
@@ -85,11 +52,11 @@ export const FeatureTabs: React.FC = () => {
             isExpanded ? 'pointer-events-none opacity-0' : 'opacity-100'
           }`}
         >
-          {/* Full-card clickable button to toggle active container and resize */}
+          {/* Transparent full-card button to expand on click */}
           <button
             type="button"
-            onClick={() => handleCardClick(rowIdx, side, card.id)}
-            aria-label={`Select ${card.title}`}
+            onClick={() => handleExpand(card.id)}
+            aria-label={`Show ${card.title} details`}
             className="absolute inset-0 z-0 cursor-pointer"
             aria-hidden={isExpanded}
             tabIndex={isExpanded ? -1 : 0}
@@ -124,13 +91,12 @@ export const FeatureTabs: React.FC = () => {
                   </a>
                 </div>
 
-                {/* Plus (+) Button to open full feature details */}
                 <button
                   type="button"
                   tabIndex={0}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handlePlusClick(rowIdx, side, card.id);
+                    handleExpand(card.id);
                   }}
                   aria-label={`Show ${card.title} details`}
                   className="pointer-events-auto relative z-10 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo transition-transform duration-300 ease-out hover:scale-105 sm:size-11"
@@ -150,10 +116,7 @@ export const FeatureTabs: React.FC = () => {
 
               {/* Screenshot Illustration */}
               <div className="relative w-full">
-                <div
-                  className="product-card-shot w-full transition-transform duration-300"
-                  style={card.shotStyle as React.CSSProperties}
-                >
+                <div className="product-card-shot w-full" style={card.shotStyle as React.CSSProperties}>
                   <Image
                     alt={card.shotAlt}
                     src={card.shotSrc}
@@ -282,25 +245,31 @@ export const FeatureTabs: React.FC = () => {
               </div>
             </div>
 
-            {/* Desktop Bento Grid: 3 rows with dynamic width animation on click */}
+            {/* Desktop Bento Grid: 3 rows with smooth width animation */}
             <div
               className="hidden flex-col gap-4 md:flex md:gap-6"
               style={{ ['--pcs-row-max-h' as any]: '38rem' }}
             >
               {rows.map(([cardA, cardB], rowIdx) => {
-                // If left container is active in this row: Left is flex 2 (large), Right is flex 1 (small)
-                // If right container is active in this row: Right is flex 2 (large), Left is flex 1 (small)
-                const isLeftActive = rowActiveSide[rowIdx] === 'left';
-                const flexA = isLeftActive ? 2 : 1;
-                const flexB = isLeftActive ? 1 : 2;
+                // Determine dynamic flex grows
+                let flexA = cardA.colSpan;
+                let flexB = cardB.colSpan;
+
+                if (expandedCardId === cardA.id && cardA.colSpan === 1) {
+                  flexA = 2;
+                  flexB = 1;
+                } else if (expandedCardId === cardB.id && cardB.colSpan === 1) {
+                  flexB = 2;
+                  flexA = 1;
+                }
 
                 return (
                   <div
                     key={rowIdx}
                     className="flex h-[var(--pcs-row-max-h)] max-h-[var(--pcs-row-max-h)] shrink-0 flex-row items-stretch gap-6"
                   >
-                    {renderCard(cardA, flexA, rowIdx, 'left')}
-                    {renderCard(cardB, flexB, rowIdx, 'right')}
+                    {renderCard(cardA, flexA)}
+                    {renderCard(cardB, flexB)}
                   </div>
                 );
               })}
@@ -349,7 +318,7 @@ export const FeatureTabs: React.FC = () => {
 
                             <button
                               type="button"
-                              onClick={() => setExpandedCardId(card.id)}
+                              onClick={() => handleExpand(card.id)}
                               aria-label={`Show ${card.title} details`}
                               className="pointer-events-auto relative z-10 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo sm:size-11"
                             >
