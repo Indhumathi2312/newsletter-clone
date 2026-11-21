@@ -5,10 +5,41 @@ import Image from 'next/image';
 import { productCards, ProductCardData } from '../data/productFeatures';
 
 export const FeatureTabs: React.FC = () => {
+  // Each row tracks which container is currently large ('left' | 'right')
+  const [rowActiveSide, setRowActiveSide] = useState<{ [rowIdx: number]: 'left' | 'right' }>({
+    0: 'left',  // Row 1: Newsletters (flex 2) + Podcasts (flex 1)
+    1: 'right', // Row 2: Digital Products (flex 1) + Monetization (flex 2)
+    2: 'left',  // Row 3: Community (flex 2) + Websites (flex 1)
+  });
+
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
-  const handleExpand = (id: string) => {
-    setExpandedCardId((current) => (current === id ? null : id));
+  // Left container click -> left large, right small.
+  // Right container click -> right large, left small.
+  // Clicking an already large container toggles its flipped details panel.
+  const handleCardClick = (rowIdx: number, side: 'left' | 'right', card: ProductCardData) => {
+    const isCurrentLarge = rowActiveSide[rowIdx] === side;
+    if (!isCurrentLarge) {
+      setRowActiveSide((prev) => ({
+        ...prev,
+        [rowIdx]: side,
+      }));
+      // If the other container was expanded/flipped, close it
+      if (expandedCardId) {
+        setExpandedCardId(null);
+      }
+    } else {
+      setExpandedCardId((current) => (current === card.id ? null : card.id));
+    }
+  };
+
+  // Clicking the Plus (+) button: makes container large and opens full details panel
+  const handlePlusClick = (rowIdx: number, side: 'left' | 'right', card: ProductCardData) => {
+    setRowActiveSide((prev) => ({
+      ...prev,
+      [rowIdx]: side,
+    }));
+    setExpandedCardId((current) => (current === card.id ? null : card.id));
   };
 
   const handleClose = () => {
@@ -21,13 +52,18 @@ export const FeatureTabs: React.FC = () => {
     [productCards[4], productCards[5]], // Community (2), Websites (1)
   ];
 
-  const renderCard = (card: ProductCardData, flexGrow: number) => {
+  const renderCard = (
+    card: ProductCardData,
+    flexGrow: number,
+    rowIdx: number,
+    side: 'left' | 'right'
+  ) => {
     const isExpanded = expandedCardId === card.id;
 
     return (
       <div
         key={card.id}
-        className="product-card-flip-tile relative min-h-0 min-w-0 overflow-hidden rounded-xl border border-subtle bg-[#0D0B28]"
+        className="product-card-flip-tile relative min-h-0 min-w-0 overflow-hidden rounded-xl border border-subtle bg-[#0D0B28] cursor-pointer transition-all duration-300 hover:border-white/20"
         data-card-id={card.id}
         data-flex={flexGrow}
         style={{
@@ -52,11 +88,11 @@ export const FeatureTabs: React.FC = () => {
             isExpanded ? 'pointer-events-none opacity-0' : 'opacity-100'
           }`}
         >
-          {/* Transparent full-card button to expand on click */}
+          {/* Full-card clickable button to toggle active container size or flip */}
           <button
             type="button"
-            onClick={() => handleExpand(card.id)}
-            aria-label={`Show ${card.title} details`}
+            onClick={() => handleCardClick(rowIdx, side, card)}
+            aria-label={`Select ${card.title}`}
             className="absolute inset-0 z-0 cursor-pointer"
             aria-hidden={isExpanded}
             tabIndex={isExpanded ? -1 : 0}
@@ -91,12 +127,13 @@ export const FeatureTabs: React.FC = () => {
                   </a>
                 </div>
 
+                {/* Plus (+) Button to flip open full feature details */}
                 <button
                   type="button"
                   tabIndex={0}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleExpand(card.id);
+                    handlePlusClick(rowIdx, side, card);
                   }}
                   aria-label={`Show ${card.title} details`}
                   className="pointer-events-auto relative z-10 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo transition-transform duration-300 ease-out hover:scale-105 sm:size-11"
@@ -224,8 +261,8 @@ export const FeatureTabs: React.FC = () => {
 
               <div className="flex w-full max-w-[557px] flex-col items-start gap-6">
                 <p className="text-lg md:text-xl font-medium text-white">
-                  Publish your best work, grow your audience, unlock new revenue, and understand
-                  what&apos;s working. beehiiv brings it all together, no digital duct tape
+                  Publish your best work, grow your audience, unlock revenue, and understand
+                  what&apos;s working. beehiiv puts it all together, no digital duct tape
                   required.
                 </p>
 
@@ -245,31 +282,23 @@ export const FeatureTabs: React.FC = () => {
               </div>
             </div>
 
-            {/* Desktop Bento Grid: 3 rows with smooth width animation */}
+            {/* Desktop Bento Grid: 3 rows with 2 containers each & smooth interactive width toggle */}
             <div
               className="hidden flex-col gap-4 md:flex md:gap-6"
               style={{ ['--pcs-row-max-h' as any]: '38rem' }}
             >
               {rows.map(([cardA, cardB], rowIdx) => {
-                // Determine dynamic flex grows
-                let flexA = cardA.colSpan;
-                let flexB = cardB.colSpan;
-
-                if (expandedCardId === cardA.id && cardA.colSpan === 1) {
-                  flexA = 2;
-                  flexB = 1;
-                } else if (expandedCardId === cardB.id && cardB.colSpan === 1) {
-                  flexB = 2;
-                  flexA = 1;
-                }
+                const isLeftActive = rowActiveSide[rowIdx] === 'left';
+                const flexA = isLeftActive ? 2 : 1;
+                const flexB = isLeftActive ? 1 : 2;
 
                 return (
                   <div
                     key={rowIdx}
                     className="flex h-[var(--pcs-row-max-h)] max-h-[var(--pcs-row-max-h)] shrink-0 flex-row items-stretch gap-6"
                   >
-                    {renderCard(cardA, flexA)}
-                    {renderCard(cardB, flexB)}
+                    {renderCard(cardA, flexA, rowIdx, 'left')}
+                    {renderCard(cardB, flexB, rowIdx, 'right')}
                   </div>
                 );
               })}
@@ -312,13 +341,26 @@ export const FeatureTabs: React.FC = () => {
                                 rel="noreferrer"
                                 className="text-base font-medium group pointer-events-auto relative z-10 inline-flex w-fit items-center gap-1.5 text-accent-pink"
                               >
-                                Get started free &rarr;
+                                Get started free
+                                <span className="inline-flex transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="1em"
+                                    height="1em"
+                                    fill="currentColor"
+                                    viewBox="0 0 256 256"
+                                    className="h-4 w-4"
+                                    aria-hidden="true"
+                                  >
+                                    <path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z" />
+                                  </svg>
+                                </span>
                               </a>
                             </div>
 
                             <button
                               type="button"
-                              onClick={() => handleExpand(card.id)}
+                              onClick={() => setExpandedCardId(card.id)}
                               aria-label={`Show ${card.title} details`}
                               className="pointer-events-auto relative z-10 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo sm:size-11"
                             >

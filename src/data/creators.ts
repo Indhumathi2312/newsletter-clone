@@ -27,7 +27,7 @@ export const tickerItems: TickerItem[] = [
       id: 'robin-arzon',
       name: 'Robin Arzón',
       publication: 'Swagger Society',
-      imageSrc: '/images/robin.png',
+      imageSrc: '/images/robin-2.png',
     },
   },
   {
@@ -67,7 +67,7 @@ export const tickerItems: TickerItem[] = [
       id: 'corporate-natalie',
       name: 'Corporate Natalie',
       publication: "Working Girl's Guide",
-      imageSrc: '/images/corporate-natalie.png',
+      imageSrc: '/images/natalie.png',
     },
   },
   {
