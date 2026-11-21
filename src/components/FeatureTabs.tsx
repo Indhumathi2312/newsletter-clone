@@ -5,245 +5,38 @@ import Image from 'next/image';
 import { productCards, ProductCardData } from '../data/productFeatures';
 
 export const FeatureTabs: React.FC = () => {
-  // Each row tracks which container is currently large ('left' | 'right')
-  const [rowActiveSide, setRowActiveSide] = useState<{ [rowIdx: number]: 'left' | 'right' }>({
-    0: 'left',  // Row 1: Newsletters (flex 2) + Podcasts (flex 1)
-    1: 'right', // Row 2: Digital Products (flex 1) + Monetization (flex 2)
-    2: 'left',  // Row 3: Community (flex 2) + Websites (flex 1)
+  // Each of the 3 rows tracks which container is expanded: 'left' | 'right' | null (balanced 50/50)
+  const [rowExpandedState, setRowExpandedState] = useState<{ [rowIdx: number]: 'left' | 'right' | null }>({
+    0: null, // Row 1: Newsletters & Podcasts
+    1: null, // Row 2: Digital Products & Monetization
+    2: null, // Row 3: Community & Websites
   });
 
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  // Mobile: tracks which card IDs are expanded vertically
+  const [mobileExpandedId, setMobileExpandedId] = useState<string | null>(null);
 
-  // Left container click -> left large, right small.
-  // Right container click -> right large, left small.
-  // Clicking an already large container toggles its flipped details panel.
-  const handleCardClick = (rowIdx: number, side: 'left' | 'right', card: ProductCardData) => {
-    const isCurrentLarge = rowActiveSide[rowIdx] === side;
-    if (!isCurrentLarge) {
-      setRowActiveSide((prev) => ({
-        ...prev,
-        [rowIdx]: side,
-      }));
-      // If the other container was expanded/flipped, close it
-      if (expandedCardId) {
-        setExpandedCardId(null);
+  // Toggle expansion for a container in a specific row
+  const handleToggle = (rowIdx: number, side: 'left' | 'right') => {
+    setRowExpandedState((prev) => {
+      const currentState = prev[rowIdx];
+      if (currentState === side) {
+        // Clicking X or active card restores to balanced equal-width (null)
+        return { ...prev, [rowIdx]: null };
       }
-    } else {
-      setExpandedCardId((current) => (current === card.id ? null : card.id));
-    }
+      // Expand the selected side, smoothly shrinking the opposite side
+      return { ...prev, [rowIdx]: side };
+    });
   };
 
-  // Clicking the Plus (+) button: makes container large and opens full details panel
-  const handlePlusClick = (rowIdx: number, side: 'left' | 'right', card: ProductCardData) => {
-    setRowActiveSide((prev) => ({
-      ...prev,
-      [rowIdx]: side,
-    }));
-    setExpandedCardId((current) => (current === card.id ? null : card.id));
-  };
-
-  const handleClose = () => {
-    setExpandedCardId(null);
+  const handleMobileToggle = (cardId: string) => {
+    setMobileExpandedId((current) => (current === cardId ? null : cardId));
   };
 
   const rows: [ProductCardData, ProductCardData][] = [
-    [productCards[0], productCards[1]], // Newsletters (2), Podcasts (1)
-    [productCards[2], productCards[3]], // Digital Products (1), Monetization (2)
-    [productCards[4], productCards[5]], // Community (2), Websites (1)
+    [productCards[0], productCards[1]], // Newsletters & Podcasts
+    [productCards[2], productCards[3]], // Digital Products & Monetization
+    [productCards[4], productCards[5]], // Community & Websites
   ];
-
-  const renderCard = (
-    card: ProductCardData,
-    flexGrow: number,
-    rowIdx: number,
-    side: 'left' | 'right'
-  ) => {
-    const isExpanded = expandedCardId === card.id;
-
-    return (
-      <div
-        key={card.id}
-        className="product-card-flip-tile relative min-h-0 min-w-0 overflow-hidden rounded-xl border border-subtle bg-[#0D0B28] cursor-pointer transition-all duration-300 hover:border-white/20"
-        data-card-id={card.id}
-        data-flex={flexGrow}
-        style={{
-          flexGrow,
-          flexBasis: '0%',
-        }}
-      >
-        {/* Background Mesh Image */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[#0D0B28]">
-          <Image
-            alt={card.title}
-            src={card.meshSrc}
-            fill
-            className="object-fill"
-            sizes="(min-width: 768px) 40vw, 100vw"
-          />
-        </div>
-
-        {/* 1. RESTING FRONT VIEW */}
-        <div
-          className={`product-card-flip-resting absolute inset-0 flex min-h-0 w-full flex-col overflow-hidden rounded-xl bg-transparent text-left transition-opacity duration-300 ${
-            isExpanded ? 'pointer-events-none opacity-0' : 'opacity-100'
-          }`}
-        >
-          {/* Full-card clickable button to toggle active container size or flip */}
-          <button
-            type="button"
-            onClick={() => handleCardClick(rowIdx, side, card)}
-            aria-label={`Select ${card.title}`}
-            className="absolute inset-0 z-0 cursor-pointer"
-            aria-hidden={isExpanded}
-            tabIndex={isExpanded ? -1 : 0}
-          />
-
-          <div className="pointer-events-none absolute inset-0 z-10">
-            <div className="relative flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden p-4 sm:gap-5 sm:p-5 lg:gap-6 lg:p-0">
-              <div className="relative z-10 flex shrink-0 items-start justify-between gap-4 transition-opacity duration-150 ease-out lg:px-6 lg:pt-6 opacity-100">
-                <div className="flex min-w-0 flex-1 flex-col gap-2">
-                  <h3 className="font-bold text-xl md:text-2xl text-white">{card.title}</h3>
-                  <p className="text-base md:text-lg font-medium text-secondary">{card.desc}</p>
-                  <a
-                    href="https://app.beehiiv.com/signup"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-base md:text-lg font-medium group pointer-events-auto relative z-10 inline-flex w-fit items-center gap-1.5 text-accent-pink hover:underline"
-                  >
-                    Get started free
-                    <span className="inline-flex transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1em"
-                        height="1em"
-                        fill="currentColor"
-                        viewBox="0 0 256 256"
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                      >
-                        <path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z" />
-                      </svg>
-                    </span>
-                  </a>
-                </div>
-
-                {/* Plus (+) Button to flip open full feature details */}
-                <button
-                  type="button"
-                  tabIndex={0}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePlusClick(rowIdx, side, card);
-                  }}
-                  aria-label={`Show ${card.title} details`}
-                  className="pointer-events-auto relative z-10 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo transition-transform duration-300 ease-out hover:scale-105 sm:size-11"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    viewBox="0 0 256 256"
-                    className="sm:size-7"
-                  >
-                    <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Screenshot Illustration */}
-              <div className="relative w-full">
-                <div className="product-card-shot w-full" style={card.shotStyle as React.CSSProperties}>
-                  <Image
-                    alt={card.shotAlt}
-                    src={card.shotSrc}
-                    width={card.shotWidth}
-                    height={card.shotHeight}
-                    className="product-card-shot-img relative h-auto w-full"
-                    priority={card.id === 'newsletters'}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 2. EXPANDED / FLIPPED PANEL VIEW */}
-        <div
-          className={`product-card-flip-panel absolute inset-0 z-20 flex h-full w-full flex-col overflow-y-auto rounded-xl bg-surface-2 p-4 sm:p-5 lg:h-full lg:overflow-hidden lg:p-6 transition-opacity duration-300 ${
-            isExpanded ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-          }`}
-          aria-hidden={!isExpanded}
-        >
-          <div className="flex h-full min-h-0 flex-col gap-6">
-            <div className="relative flex shrink-0 flex-col items-start justify-between sm:flex-row sm:items-center">
-              <button
-                type="button"
-                tabIndex={isExpanded ? 0 : -1}
-                onClick={handleClose}
-                className="pointer-events-auto absolute right-0 top-0 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo transition-opacity hover:opacity-90 sm:right-0 sm:top-0 sm:size-11"
-                aria-label={`Close ${card.title} details`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                  className="sm:size-7"
-                >
-                  <path d="M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z" />
-                </svg>
-              </button>
-
-              <div className="flex w-full flex-col gap-4 pr-12 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:pr-16">
-                <div className="flex w-full min-w-0 flex-col gap-1.5 max-w-[420px]">
-                  <h3 className="text-2xl font-bold leading-7 text-white">{card.panelTitle}</h3>
-                  <p className="text-base sm:text-lg font-medium leading-[26px] text-ghost">
-                    {card.panelDesc}
-                  </p>
-                </div>
-
-                <a
-                  href="https://app.beehiiv.com/signup"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="custom-box-shadow-button relative flex cursor-pointer justify-center gap-[10px] shrink-0"
-                >
-                  <div className="text-white bg-[#2F39BA] border-[#2F39BA] border rounded-[6px] text-base lg:text-lg font-bold leading-6 py-2 px-6 inline-flex justify-center items-center gap-2 whitespace-nowrap custom-box-shadow-text relative z-10 flex h-full w-full items-center justify-center text-center">
-                    Sign up for free
-                  </div>
-                  <div className="bg-[#F092DD] custom-box-shadow-2 absolute inset-px border border-[#0B0D2A] rounded-[6px]" />
-                  <div className="bg-[#FFC8EB] custom-box-shadow-1 absolute inset-px border border-[#0B0D2A] rounded-[6px]" />
-                </a>
-              </div>
-            </div>
-
-            {/* 6 Feature Tiles Grid */}
-            <div className="grid flex-1 min-h-0 gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
-              {card.features.map((feat, idx) => (
-                <div
-                  key={idx}
-                  className="flex flex-col items-start gap-3 sm:gap-4 rounded-xl bg-surface-3 p-3.5 sm:px-4 sm:py-5 lg:h-full lg:min-h-0"
-                >
-                  <div
-                    dangerouslySetInnerHTML={{ __html: feat.svg }}
-                    className="size-6 shrink-0 text-cosmic-lavender"
-                  />
-                  <div className="flex w-full flex-col gap-1 lg:min-h-0 lg:overflow-hidden">
-                    <h4 className="text-sm font-bold leading-5 text-white">{feat.title}</h4>
-                    <p className="text-xs sm:text-sm font-medium leading-relaxed text-ghost line-clamp-3">
-                      {feat.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <section className="bg-cyber-ink">
@@ -253,20 +46,21 @@ export const FeatureTabs: React.FC = () => {
             {/* Section Header */}
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div className="flex flex-col gap-2">
-                <p className="text-sm font-medium text-accent-pink">Product</p>
-                <h2 className="clash-grotesk-font-family uppercase font-bold text-4xl md:text-5xl max-w-[569px] text-white">
+                <p className="text-sm font-semibold tracking-wider uppercase text-accent-pink">
+                  Product
+                </p>
+                <h2 className="clash-grotesk-font-family uppercase font-bold text-4xl md:text-5xl max-w-[569px] text-white tracking-tight">
                   Everything you need to turn attention into growth.
                 </h2>
               </div>
 
               <div className="flex w-full max-w-[557px] flex-col items-start gap-6">
-                <p className="text-lg md:text-xl font-medium text-white">
+                <p className="text-lg md:text-xl font-medium text-white leading-relaxed">
                   Publish your best work, grow your audience, unlock revenue, and understand
-                  what&apos;s working. beehiiv puts it all together, no digital duct tape
-                  required.
+                  what&apos;s working. beehiiv puts it all together, no digital duct tape required.
                 </p>
 
-                {/* Iconic 3D Layered CTA Button */}
+                {/* 3D Stacked CTA Button */}
                 <a
                   href="https://app.beehiiv.com/signup"
                   target="_blank"
@@ -282,172 +76,409 @@ export const FeatureTabs: React.FC = () => {
               </div>
             </div>
 
-            {/* Desktop Bento Grid: 3 rows with 2 containers each & smooth interactive width toggle */}
-            <div
-              className="hidden flex-col gap-4 md:flex md:gap-6"
-              style={{ ['--pcs-row-max-h' as any]: '38rem' }}
-            >
-              {rows.map(([cardA, cardB], rowIdx) => {
-                const isLeftActive = rowActiveSide[rowIdx] === 'left';
-                const flexA = isLeftActive ? 2 : 1;
-                const flexB = isLeftActive ? 1 : 2;
+            {/* Desktop Bento Rows: 3 horizontal pairs, 2 containers each with smooth expand/shrink */}
+            <div className="hidden flex-col gap-6 md:flex">
+              {rows.map(([leftCard, rightCard], rowIdx) => {
+                const state = rowExpandedState[rowIdx];
+                const isLeftExpanded = state === 'left';
+                const isRightExpanded = state === 'right';
+                const isBalanced = state === null;
+
+                // Width proportions:
+                // Balanced: 50% / 50%
+                // Left expanded: ~68% Left / ~32% Right
+                // Right expanded: ~32% Left / ~68% Right
+                const leftFlex = isLeftExpanded ? '68 1 0%' : isRightExpanded ? '32 1 0%' : '50 1 0%';
+                const rightFlex = isRightExpanded ? '68 1 0%' : isLeftExpanded ? '32 1 0%' : '50 1 0%';
 
                 return (
                   <div
                     key={rowIdx}
-                    className="flex h-[var(--pcs-row-max-h)] max-h-[var(--pcs-row-max-h)] shrink-0 flex-row items-stretch gap-6"
+                    className="flex min-h-[38rem] h-[38rem] w-full flex-row items-stretch gap-6"
                   >
-                    {renderCard(cardA, flexA, rowIdx, 'left')}
-                    {renderCard(cardB, flexB, rowIdx, 'right')}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Mobile View: Vertical Cards Stack */}
-            <div className="flex flex-col gap-4 md:hidden">
-              {productCards.map((card) => {
-                const isExpanded = expandedCardId === card.id;
-                return (
-                  <article
-                    key={card.id}
-                    className="relative isolate overflow-hidden rounded-xl border border-subtle bg-[#0D0B28]"
-                  >
-                    {!isExpanded && (
-                      <div
-                        aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 bg-[#0D0B28]"
-                      >
+                    {/* LEFT CONTAINER */}
+                    <div
+                      className={`product-bento-container relative min-h-0 min-w-0 overflow-hidden rounded-2xl border bg-gradient-to-b from-[#141038] to-[#0A0822] shadow-xl transition-all duration-600 ease-in-out ${
+                        isLeftExpanded
+                          ? 'border-white/20 ring-1 ring-[#FF5EC4]/20'
+                          : 'border-white/10 hover:border-white/20'
+                      }`}
+                      style={{ flex: leftFlex }}
+                    >
+                      {/* Mesh Background */}
+                      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-40">
                         <Image
-                          alt={card.title}
-                          src={card.meshSrc}
+                          alt=""
+                          src={leftCard.meshSrc}
                           fill
-                          className="object-fill"
-                          sizes="100vw"
+                          className="object-cover"
+                          sizes="(min-width: 768px) 50vw, 100vw"
                         />
                       </div>
-                    )}
 
-                    <div className="relative flex flex-col">
-                      {!isExpanded ? (
-                        <div className="relative flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden p-4 sm:gap-5 sm:p-5">
-                          <div className="relative z-10 flex shrink-0 items-start justify-between gap-4">
-                            <div className="flex min-w-0 flex-1 flex-col gap-2">
-                              <h3 className="font-bold text-xl text-white">{card.title}</h3>
-                              <p className="text-base font-medium text-secondary">{card.desc}</p>
+                      {/* Card Content Area */}
+                      <div className="relative z-10 flex h-full flex-col justify-between p-6 lg:p-7 overflow-hidden">
+                        {/* Top Header Row */}
+                        <div className="flex shrink-0 items-start justify-between gap-4">
+                          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                            <h3 className="font-bold text-2xl lg:text-3xl text-white tracking-tight">
+                              {leftCard.title}
+                            </h3>
+                            <p
+                              className={`text-sm lg:text-base font-medium text-[#9898D2] leading-snug ${
+                                isRightExpanded ? 'line-clamp-2' : ''
+                              }`}
+                            >
+                              {leftCard.desc}
+                            </p>
+                            <a
+                              href="https://app.beehiiv.com/signup"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="group inline-flex w-fit items-center gap-1.5 text-sm lg:text-base font-semibold text-accent-pink hover:underline pt-1"
+                            >
+                              Get started free
+                              <span className="inline-flex transition-transform duration-300 ease-out group-hover:translate-x-1">
+                                &rarr;
+                              </span>
+                            </a>
+                          </div>
+
+                          {/* Right Controls: Start building CTA (if expanded) + Plus/X Button */}
+                          <div className="flex items-center gap-3 shrink-0">
+                            {isLeftExpanded && (
                               <a
                                 href="https://app.beehiiv.com/signup"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-base font-medium group pointer-events-auto relative z-10 inline-flex w-fit items-center gap-1.5 text-accent-pink"
+                                className="custom-box-shadow-button relative hidden sm:inline-flex cursor-pointer justify-center"
                               >
-                                Get started free
-                                <span className="inline-flex transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="1em"
-                                    height="1em"
-                                    fill="currentColor"
-                                    viewBox="0 0 256 256"
-                                    className="h-4 w-4"
-                                    aria-hidden="true"
-                                  >
-                                    <path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z" />
-                                  </svg>
-                                </span>
+                                <div className="text-white bg-[#2F39BA] border-[#2F39BA] border rounded-lg text-xs lg:text-sm font-bold py-2 px-4 inline-flex justify-center items-center gap-1.5 whitespace-nowrap custom-box-shadow-text relative z-10">
+                                  Start building for free
+                                </div>
+                                <div className="bg-[#F092DD] custom-box-shadow-2 absolute inset-px border border-[#0B0D2A] rounded-lg" />
+                                <div className="bg-[#FFC8EB] custom-box-shadow-1 absolute inset-px border border-[#0B0D2A] rounded-lg" />
                               </a>
-                            </div>
+                            )}
 
+                            {/* Plus / X Toggle Button */}
                             <button
                               type="button"
-                              onClick={() => setExpandedCardId(card.id)}
-                              aria-label={`Show ${card.title} details`}
-                              className="pointer-events-auto relative z-10 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo sm:size-11"
+                              onClick={() => handleToggle(rowIdx, 'left')}
+                              aria-label={isLeftExpanded ? `Close ${leftCard.title} details` : `Expand ${leftCard.title} details`}
+                              className="relative flex size-10 lg:size-11 shrink-0 items-center justify-center rounded-xl bg-[#201B4B] text-[#FF5EC4] shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#2B2465] cursor-pointer"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
+                                width="22"
+                                height="22"
                                 fill="currentColor"
                                 viewBox="0 0 256 256"
-                                className="sm:size-7"
+                                className={`transition-transform duration-500 ease-in-out ${
+                                  isLeftExpanded ? 'rotate-45' : 'rotate-0'
+                                }`}
                               >
                                 <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" />
                               </svg>
                             </button>
                           </div>
-
-                          <div className="relative w-full">
-                            <div
-                              className="product-card-shot w-full"
-                              style={card.shotStyle as React.CSSProperties}
-                            >
-                              <Image
-                                alt={card.shotAlt}
-                                src={card.shotSrc}
-                                width={card.shotWidth}
-                                height={card.shotHeight}
-                                className="product-card-shot-img relative h-auto w-full"
-                              />
-                            </div>
-                          </div>
                         </div>
-                      ) : (
-                        <div className="relative flex h-full min-h-0 w-full flex-col overflow-clip bg-surface-2 p-4 pt-12 sm:p-5">
-                          <button
-                            type="button"
-                            onClick={handleClose}
-                            className="absolute right-4 top-4 z-20 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-flamingo sm:size-11"
-                            aria-label={`Close ${card.title} details`}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fill="currentColor"
-                              viewBox="0 0 256 256"
-                              className="sm:size-7"
-                            >
-                              <path d="M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z" />
-                            </svg>
-                          </button>
 
-                          <div className="flex flex-col gap-6">
-                            <div className="flex flex-col gap-1.5 pr-12">
-                              <h3 className="text-xl font-bold text-white">{card.panelTitle}</h3>
-                              <p className="text-sm font-medium text-ghost">{card.panelDesc}</p>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                              {card.features.map((feat, idx) => (
+                        {/* Body Content: 6 Feature Boxes when Expanded, Dashboard Preview Image when Normal/Collapsed */}
+                        {isLeftExpanded ? (
+                          <div className="product-expanded-content flex flex-col justify-center flex-1 min-h-0 pt-4 pb-2">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 w-full">
+                              {leftCard.features.map((feat, idx) => (
                                 <div
                                   key={idx}
-                                  className="flex flex-col items-start gap-3 rounded-xl bg-surface-3 p-3.5"
+                                  className="flex flex-col items-start gap-2.5 rounded-xl bg-[#18143F]/90 border border-white/5 p-4 transition-all duration-300 hover:bg-[#201B52] hover:border-white/10"
                                 >
                                   <div
                                     dangerouslySetInnerHTML={{ __html: feat.svg }}
-                                    className="size-6 shrink-0 text-cosmic-lavender"
+                                    className="size-6 shrink-0 text-[#C4B5FD]"
                                   />
-                                  <div className="flex flex-col gap-1">
-                                    <h4 className="text-sm font-bold text-white">{feat.title}</h4>
-                                    <p className="text-xs font-medium text-ghost">{feat.desc}</p>
+                                  <div className="flex flex-col gap-1 min-w-0">
+                                    <h4 className="text-sm font-bold text-white tracking-tight">{feat.title}</h4>
+                                    <p className="text-xs font-normal leading-relaxed text-[#A5A5D6] line-clamp-3">
+                                      {feat.desc}
+                                    </p>
                                   </div>
                                 </div>
                               ))}
                             </div>
+                          </div>
+                        ) : (
+                          /* Lower Preview Image */
+                          <div
+                            onClick={() => isRightExpanded && handleToggle(rowIdx, 'left')}
+                            className={`relative w-full flex-1 min-h-0 overflow-hidden flex items-end justify-center pt-2 ${
+                              isRightExpanded ? 'cursor-pointer' : ''
+                            }`}
+                          >
+                            <div
+                              className="product-card-shot relative w-full h-full transition-transform duration-600 ease-in-out"
+                              style={leftCard.shotStyle as React.CSSProperties}
+                            >
+                              <Image
+                                alt={leftCard.shotAlt}
+                                src={leftCard.shotSrc}
+                                width={leftCard.shotWidth}
+                                height={leftCard.shotHeight}
+                                className="product-card-shot-img relative h-auto w-full max-h-full object-contain object-top drop-shadow-2xl"
+                                priority={leftCard.id === 'newsletters'}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
+                    {/* RIGHT CONTAINER */}
+                    <div
+                      className={`product-bento-container relative min-h-0 min-w-0 overflow-hidden rounded-2xl border bg-gradient-to-b from-[#141038] to-[#0A0822] shadow-xl transition-all duration-600 ease-in-out ${
+                        isRightExpanded
+                          ? 'border-white/20 ring-1 ring-[#FF5EC4]/20'
+                          : 'border-white/10 hover:border-white/20'
+                      }`}
+                      style={{ flex: rightFlex }}
+                    >
+                      {/* Mesh Background */}
+                      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-40">
+                        <Image
+                          alt=""
+                          src={rightCard.meshSrc}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 768px) 50vw, 100vw"
+                        />
+                      </div>
+
+                      {/* Card Content Area */}
+                      <div className="relative z-10 flex h-full flex-col justify-between p-6 lg:p-7 overflow-hidden">
+                        {/* Top Header Row */}
+                        <div className="flex shrink-0 items-start justify-between gap-4">
+                          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                            <h3 className="font-bold text-2xl lg:text-3xl text-white tracking-tight">
+                              {rightCard.title}
+                            </h3>
+                            <p
+                              className={`text-sm lg:text-base font-medium text-[#9898D2] leading-snug ${
+                                isLeftExpanded ? 'line-clamp-2' : ''
+                              }`}
+                            >
+                              {rightCard.desc}
+                            </p>
                             <a
                               href="https://app.beehiiv.com/signup"
                               target="_blank"
                               rel="noreferrer"
-                              className="custom-box-shadow-button relative flex cursor-pointer justify-center gap-[10px] w-full"
+                              className="group inline-flex w-fit items-center gap-1.5 text-sm lg:text-base font-semibold text-accent-pink hover:underline pt-1"
                             >
-                              <div className="text-white bg-[#2F39BA] border-[#2F39BA] border rounded-[6px] text-base font-bold leading-6 py-2 px-6 inline-flex justify-center items-center gap-2 whitespace-nowrap custom-box-shadow-text relative z-10 flex h-full w-full items-center justify-center text-center">
-                                Sign up for free
-                              </div>
-                              <div className="bg-[#F092DD] custom-box-shadow-2 absolute inset-px border border-[#0B0D2A] rounded-[6px]" />
-                              <div className="bg-[#FFC8EB] custom-box-shadow-1 absolute inset-px border border-[#0B0D2A] rounded-[6px]" />
+                              Get started free
+                              <span className="inline-flex transition-transform duration-300 ease-out group-hover:translate-x-1">
+                                &rarr;
+                              </span>
                             </a>
+                          </div>
+
+                          {/* Right Controls: Start building CTA (if expanded) + Plus/X Button */}
+                          <div className="flex items-center gap-3 shrink-0">
+                            {isRightExpanded && (
+                              <a
+                                href="https://app.beehiiv.com/signup"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="custom-box-shadow-button relative hidden sm:inline-flex cursor-pointer justify-center"
+                              >
+                                <div className="text-white bg-[#2F39BA] border-[#2F39BA] border rounded-lg text-xs lg:text-sm font-bold py-2 px-4 inline-flex justify-center items-center gap-1.5 whitespace-nowrap custom-box-shadow-text relative z-10">
+                                  Start building for free
+                                </div>
+                                <div className="bg-[#F092DD] custom-box-shadow-2 absolute inset-px border border-[#0B0D2A] rounded-lg" />
+                                <div className="bg-[#FFC8EB] custom-box-shadow-1 absolute inset-px border border-[#0B0D2A] rounded-lg" />
+                              </a>
+                            )}
+
+                            {/* Plus / X Toggle Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleToggle(rowIdx, 'right')}
+                              aria-label={isRightExpanded ? `Close ${rightCard.title} details` : `Expand ${rightCard.title} details`}
+                              className="relative flex size-10 lg:size-11 shrink-0 items-center justify-center rounded-xl bg-[#201B4B] text-[#FF5EC4] shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-[#2B2465] cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="22"
+                                height="22"
+                                fill="currentColor"
+                                viewBox="0 0 256 256"
+                                className={`transition-transform duration-500 ease-in-out ${
+                                  isRightExpanded ? 'rotate-45' : 'rotate-0'
+                                }`}
+                              >
+                                <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Body Content: 6 Feature Boxes when Expanded, Dashboard Preview Image when Normal/Collapsed */}
+                        {isRightExpanded ? (
+                          <div className="product-expanded-content flex flex-col justify-center flex-1 min-h-0 pt-4 pb-2">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 w-full">
+                              {rightCard.features.map((feat, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex flex-col items-start gap-2.5 rounded-xl bg-[#18143F]/90 border border-white/5 p-4 transition-all duration-300 hover:bg-[#201B52] hover:border-white/10"
+                                >
+                                  <div
+                                    dangerouslySetInnerHTML={{ __html: feat.svg }}
+                                    className="size-6 shrink-0 text-[#C4B5FD]"
+                                  />
+                                  <div className="flex flex-col gap-1 min-w-0">
+                                    <h4 className="text-sm font-bold text-white tracking-tight">{feat.title}</h4>
+                                    <p className="text-xs font-normal leading-relaxed text-[#A5A5D6] line-clamp-3">
+                                      {feat.desc}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          /* Lower Preview Image */
+                          <div
+                            onClick={() => isLeftExpanded && handleToggle(rowIdx, 'right')}
+                            className={`relative w-full flex-1 min-h-0 overflow-hidden flex items-end justify-center pt-2 ${
+                              isLeftExpanded ? 'cursor-pointer' : ''
+                            }`}
+                          >
+                            <div
+                              className="product-card-shot relative w-full h-full transition-transform duration-600 ease-in-out"
+                              style={rightCard.shotStyle as React.CSSProperties}
+                            >
+                              <Image
+                                alt={rightCard.shotAlt}
+                                src={rightCard.shotSrc}
+                                width={rightCard.shotWidth}
+                                height={rightCard.shotHeight}
+                                className="product-card-shot-img relative h-auto w-full max-h-full object-contain object-top drop-shadow-2xl"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Mobile View: Vertical Cards Stack with vertical expand */}
+            <div className="flex flex-col gap-5 md:hidden">
+              {productCards.map((card) => {
+                const isExpanded = mobileExpandedId === card.id;
+
+                return (
+                  <article
+                    key={card.id}
+                    className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#141038] to-[#0A0822] shadow-lg transition-all duration-500"
+                  >
+                    {/* Mesh Background */}
+                    <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-40">
+                      <Image
+                        alt=""
+                        src={card.meshSrc}
+                        fill
+                        className="object-cover"
+                        sizes="100vw"
+                      />
+                    </div>
+
+                    <div className="relative z-10 flex flex-col p-5">
+                      {/* Mobile Header Row */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex flex-1 flex-col gap-1">
+                          <h3 className="font-bold text-xl text-white tracking-tight">{card.title}</h3>
+                          <p className="text-sm font-medium text-[#9898D2] leading-snug">{card.desc}</p>
+                          <a
+                            href="https://app.beehiiv.com/signup"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-accent-pink pt-1"
+                          >
+                            Get started free &rarr;
+                          </a>
+                        </div>
+
+                        {/* Plus / X Button */}
+                        <button
+                          type="button"
+                          onClick={() => handleMobileToggle(card.id)}
+                          aria-label={isExpanded ? `Close ${card.title}` : `Expand ${card.title}`}
+                          className="relative flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#201B4B] text-[#FF5EC4] shadow-md transition-all duration-300"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            viewBox="0 0 256 256"
+                            className={`transition-transform duration-500 ease-in-out ${
+                              isExpanded ? 'rotate-45' : 'rotate-0'
+                            }`}
+                          >
+                            <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Mobile Body Content */}
+                      {isExpanded ? (
+                        <div className="product-expanded-content flex flex-col gap-4 pt-5">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {card.features.map((feat, idx) => (
+                              <div
+                                key={idx}
+                                className="flex flex-col items-start gap-2 rounded-xl bg-[#18143F]/90 border border-white/5 p-3.5"
+                              >
+                                <div
+                                  dangerouslySetInnerHTML={{ __html: feat.svg }}
+                                  className="size-5 shrink-0 text-[#C4B5FD]"
+                                />
+                                <div className="flex flex-col gap-0.5">
+                                  <h4 className="text-sm font-bold text-white">{feat.title}</h4>
+                                  <p className="text-xs text-[#A5A5D6] leading-relaxed">{feat.desc}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          <a
+                            href="https://app.beehiiv.com/signup"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="custom-box-shadow-button relative flex cursor-pointer justify-center w-full mt-2"
+                          >
+                            <div className="text-white bg-[#2F39BA] border-[#2F39BA] border rounded-lg text-sm font-bold py-2.5 px-4 inline-flex justify-center items-center gap-2 whitespace-nowrap custom-box-shadow-text relative z-10 w-full text-center">
+                              Start building for free
+                            </div>
+                            <div className="bg-[#F092DD] custom-box-shadow-2 absolute inset-px border border-[#0B0D2A] rounded-lg" />
+                            <div className="bg-[#FFC8EB] custom-box-shadow-1 absolute inset-px border border-[#0B0D2A] rounded-lg" />
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="relative w-full h-[240px] overflow-hidden flex items-end justify-center pt-3 mt-2">
+                          <div
+                            className="product-card-shot w-full h-full"
+                            style={card.shotStyle as React.CSSProperties}
+                          >
+                            <Image
+                              alt={card.shotAlt}
+                              src={card.shotSrc}
+                              width={card.shotWidth}
+                              height={card.shotHeight}
+                              className="product-card-shot-img relative h-auto w-full object-contain object-top"
+                            />
                           </div>
                         </div>
                       )}
