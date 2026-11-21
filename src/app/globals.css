@@ -152,6 +152,53 @@ body {
   animation-play-state: paused;
 }
 
+/* Authentic Pricing Slider Styles */
+.eid43-pricing-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+.eid43-pricing-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: transparent;
+}
+.eid43-pricing-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -11px;
+  border: none;
+  border-radius: 50%;
+  background: url('/images/slider-thumb.svg') center / 28px 28px no-repeat;
+  cursor: pointer;
+}
+.eid43-pricing-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: url('/images/slider-thumb.svg') center / 28px 28px no-repeat;
+  cursor: pointer;
+}
+.eid43-pricing-slider::-moz-range-track {
+  height: 6px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+}
+.eid43-pricing-slider::-moz-range-progress {
+  background: transparent;
+}
+
+
 
 
 

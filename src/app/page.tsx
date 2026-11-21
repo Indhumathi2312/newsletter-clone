@@ -25,7 +25,7 @@ export default function HomePage() {
       {/* 4. Creator Testimonials & Publisher Case Studies Ticker */}
       <CreatorsTicker />
 
-      {/* 5. Pricing Plans */}
+      {/* 5. Pricing Plans - Interactive Tier Slider & Cards */}
       <Pricing />
 
       {/* 6. Featured Quote Showcase */}

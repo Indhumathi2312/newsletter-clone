@@ -57,7 +57,7 @@ export const FeatureTabs: React.FC = () => {
               <div className="flex w-full max-w-[557px] flex-col items-start gap-6">
                 <p className="text-lg md:text-xl font-medium text-white leading-relaxed">
                   Publish your best work, grow your audience, unlock revenue, and understand
-                  what&apos;s working. beehiiv puts it all together, no digital duct tape required.
+                  what&apos;s working. beehiiv brings it all together, no digital duct tape required.
                 </p>
 
                 {/* 3D Stacked CTA Button */}
