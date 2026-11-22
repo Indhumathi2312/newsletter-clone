@@ -16,24 +16,11 @@ export const Faq: React.FC = () => {
     <section className="bg-cyber-ink py-16 md:py-24 border-t border-subtle">
       <div className="mx-auto max-w-screen-xl px-5 md:px-8 xl:px-32">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Left Column: Heading & Support Info */}
+          {/* Left Column: Heading */}
           <div className="lg:col-span-4 flex flex-col gap-4 text-left">
             <h2 className="clash-grotesk-font-family uppercase font-bold text-3xl sm:text-4xl md:text-5xl text-white">
               HAVE A QUESTION?
             </h2>
-            <p className="text-base md:text-lg text-secondary">
-              Can&apos;t find what you&apos;re looking for? Reach out to our 24/7 dedicated creator support team.
-            </p>
-            <div className="mt-4">
-              <a
-                href="https://support.beehiiv.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-bold text-accent-pink hover:underline inline-flex items-center gap-1.5"
-              >
-                Visit Help Center &rarr;
-              </a>
-            </div>
           </div>
 
           {/* Right Column: Accordion List */}
