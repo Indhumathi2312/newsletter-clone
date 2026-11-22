@@ -231,30 +231,42 @@ export const Navbar: React.FC = () => {
     setActiveDropdown((prev) => (prev === label ? null : label));
   };
 
+  const handleMouseEnter = (label: string) => {
+    setActiveDropdown(label);
+  };
+
   return (
-    <header ref={navRef} className="sticky top-0 z-50 w-full bg-[#060419]">
+    <header
+      ref={navRef}
+      onMouseLeave={() => setActiveDropdown(null)}
+      className="sticky top-0 z-50 w-full bg-[#060419]"
+    >
       {/* Desktop Navigation */}
       <nav
         data-ref="desktop-nav"
         className="relative z-50 hidden w-full border-b border-[#201E3D] bg-[#060419] lg:block"
       >
-        <div className="mx-auto flex h-[80px] max-w-screen-xl flex-row items-center justify-between px-6 xl:px-12">
+        <div className="mx-auto flex h-[76px] max-w-screen-xl flex-row items-center justify-between px-6 xl:px-12">
           {/* Left section: Logo & Nav Links */}
           <div className="flex items-center gap-8 xl:gap-10">
             <Logo className="h-[28px] w-auto fill-white" />
 
-            <div className="flex items-center gap-1 xl:gap-2">
+            <div className="flex items-center gap-1 xl:gap-1.5">
               {navLinks.map((item) => {
                 const isMegaMenu = item.label === 'Product' || item.label === 'Solutions';
                 const isActive = activeDropdown === item.label;
 
                 return (
-                  <div key={item.label} className="relative">
+                  <div
+                    key={item.label}
+                    className="relative"
+                    onMouseEnter={() => item.children && handleMouseEnter(item.label)}
+                  >
                     {item.children ? (
                       <button
                         type="button"
                         onClick={() => handleDropdownToggle(item.label)}
-                        className={`flex items-center gap-1 rounded-md px-3.5 py-1.5 text-[15px] font-semibold leading-5 transition-all duration-200 cursor-pointer ${
+                        className={`flex items-center gap-1 rounded-lg px-3.5 py-1.5 text-[15px] font-semibold leading-5 transition-all duration-200 cursor-pointer ${
                           isActive
                             ? 'bg-[#141230] text-white border border-[#2B274F] shadow-sm'
                             : 'text-white/80 hover:text-white hover:bg-white/5 border border-transparent'
@@ -267,7 +279,7 @@ export const Navbar: React.FC = () => {
                       <Link
                         href={item.href}
                         onClick={() => setActiveDropdown(null)}
-                        className="rounded-md px-3.5 py-1.5 text-[15px] font-semibold leading-5 text-white/80 transition-colors duration-200 hover:text-white hover:bg-white/5"
+                        className="rounded-lg px-3.5 py-1.5 text-[15px] font-semibold leading-5 text-white/80 transition-colors duration-200 hover:text-white hover:bg-white/5"
                       >
                         {item.label}
                       </Link>
@@ -311,7 +323,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Right section: Log in, Get a demo, Sign up for free */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3.5">
             <a
               href="https://app.beehiiv.com/login"
               target="_blank"
@@ -339,9 +351,9 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* 1. PRODUCT FULL-WIDTH MEGA MENU (When Product is clicked) */}
+        {/* 1. PRODUCT FULL-WIDTH MEGA MENU (When Product is open) */}
         {activeDropdown === 'Product' && (
-          <div className="absolute left-0 top-full w-full border-b border-[#201E3D] bg-[#060419] shadow-2xl z-50">
+          <div className="absolute left-0 top-full w-full border-b border-[#201E3D] bg-[#0D0B28] shadow-2xl z-50">
             <div className="mx-auto max-w-screen-xl px-6 xl:px-12 py-8">
               
               {/* Row 1: 4 Key Product Highlights with Icons */}
@@ -353,7 +365,7 @@ export const Navbar: React.FC = () => {
                     onClick={() => setActiveDropdown(null)}
                     className="group flex items-start gap-4 rounded-xl p-2.5 transition-colors hover:bg-white/5"
                   >
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#2B274F] bg-[#12102E] shadow-sm transition-colors group-hover:border-accent-pink/40">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#2B274F] bg-[#141230] shadow-sm transition-colors group-hover:border-accent-pink/40">
                       {item.icon}
                     </div>
                     <div className="flex flex-col">
@@ -399,15 +411,15 @@ export const Navbar: React.FC = () => {
           </div>
         )}
 
-        {/* 2. SOLUTIONS FULL-WIDTH MEGA MENU (When Solutions is clicked) */}
+        {/* 2. SOLUTIONS FULL-WIDTH MEGA MENU (When Solutions is open - 3 Equal Balanced Columns) */}
         {activeDropdown === 'Solutions' && (
-          <div className="absolute left-0 top-full w-full border-b border-[#201E3D] bg-[#060419] shadow-2xl z-50">
-            <div className="mx-auto max-w-screen-xl px-6 xl:px-12 py-9">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="absolute left-0 top-full w-full border-b border-[#201E3D] bg-[#0D0B28] shadow-2xl z-50">
+            <div className="mx-auto max-w-screen-xl px-6 xl:px-12 py-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-12">
                 
                 {/* Column 1: FOR PUBLISHERS (4 items) */}
-                <div className="lg:col-span-5 flex flex-col">
-                  <p className="mb-6 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
+                <div className="flex flex-col">
+                  <p className="mb-5 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
                     FOR PUBLISHERS
                   </p>
                   <div className="flex flex-col gap-3">
@@ -416,16 +428,16 @@ export const Navbar: React.FC = () => {
                         key={item.title}
                         href={item.href}
                         onClick={() => setActiveDropdown(null)}
-                        className="group flex items-start gap-4 rounded-xl p-2 transition-colors hover:bg-white/5"
+                        className="group flex items-start gap-3.5 rounded-xl p-2 transition-colors hover:bg-white/5"
                       >
-                        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#2B274F] bg-[#12102E] shadow-sm transition-colors group-hover:border-accent-pink/40">
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#2B274F] bg-[#141230] shadow-sm transition-colors group-hover:border-accent-pink/40">
                           {item.icon}
                         </div>
                         <div className="flex flex-col">
                           <h4 className="text-[15px] font-bold leading-5 text-white group-hover:text-accent-pink transition-colors">
                             {item.title}
                           </h4>
-                          <p className="mt-1 text-[13px] font-medium leading-4 text-[#9898D2]">
+                          <p className="mt-0.5 text-[13px] font-medium leading-snug text-[#9898D2]">
                             {item.description}
                           </p>
                         </div>
@@ -435,8 +447,8 @@ export const Navbar: React.FC = () => {
                 </div>
 
                 {/* Column 2: FOR ADVERTISERS & PARTNERS (3 items) */}
-                <div className="lg:col-span-4 flex flex-col">
-                  <p className="mb-6 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
+                <div className="flex flex-col">
+                  <p className="mb-5 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
                     FOR ADVERTISERS & PARTNERS
                   </p>
                   <div className="flex flex-col gap-3">
@@ -445,16 +457,16 @@ export const Navbar: React.FC = () => {
                         key={item.title}
                         href={item.href}
                         onClick={() => setActiveDropdown(null)}
-                        className="group flex items-start gap-4 rounded-xl p-2 transition-colors hover:bg-white/5"
+                        className="group flex items-start gap-3.5 rounded-xl p-2 transition-colors hover:bg-white/5"
                       >
-                        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#2B274F] bg-[#12102E] shadow-sm transition-colors group-hover:border-accent-pink/40">
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#2B274F] bg-[#141230] shadow-sm transition-colors group-hover:border-accent-pink/40">
                           {item.icon}
                         </div>
                         <div className="flex flex-col">
                           <h4 className="text-[15px] font-bold leading-5 text-white group-hover:text-accent-pink transition-colors">
                             {item.title}
                           </h4>
-                          <p className="mt-1 text-[13px] font-medium leading-4 text-[#9898D2]">
+                          <p className="mt-0.5 text-[13px] font-medium leading-snug text-[#9898D2]">
                             {item.description}
                           </p>
                         </div>
@@ -463,9 +475,9 @@ export const Navbar: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Column 3: FEATURED STORIES (3 cards with logos + link) */}
-                <div className="lg:col-span-3 flex flex-col">
-                  <p className="mb-6 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
+                {/* Column 3: FEATURED STORIES (3 authentic logo cards + link) */}
+                <div className="flex flex-col">
+                  <p className="mb-5 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
                     FEATURED STORIES
                   </p>
                   <div className="flex flex-col gap-3">
@@ -474,19 +486,18 @@ export const Navbar: React.FC = () => {
                         key={story.title}
                         href={story.href}
                         onClick={() => setActiveDropdown(null)}
-                        className="flex items-center gap-3.5 rounded-xl border border-[#201E3D] bg-[#0E0C2B] p-2.5 transition-colors hover:bg-[#161438] hover:border-[#2C2758]"
+                        className="group flex items-center gap-3.5 rounded-xl border border-[#232049] bg-[#141230] p-2.5 transition-colors hover:bg-[#1A173D] hover:border-[#353066]"
                       >
-                        <div className="flex h-11 w-14 shrink-0 items-center justify-center rounded-lg bg-[#E2E1EC] p-1 overflow-hidden">
+                        <div className="relative h-10 w-14 shrink-0 overflow-hidden rounded-md">
                           <Image
                             src={story.logo}
                             alt={story.title}
-                            width={56}
-                            height={44}
-                            className="h-full w-full object-contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <h5 className="text-[14px] font-bold text-white truncate">
+                          <h5 className="text-[14px] font-bold text-white group-hover:text-accent-pink transition-colors truncate">
                             {story.title}
                           </h5>
                           <p className="text-[12px] text-[#9898D2] truncate">
@@ -518,12 +529,12 @@ export const Navbar: React.FC = () => {
         <div
           aria-hidden="true"
           onClick={() => setActiveDropdown(null)}
-          className="fixed inset-0 top-[80px] z-30 bg-black/40 backdrop-blur-[1px] transition-opacity hidden lg:block"
+          className="fixed inset-0 top-[76px] z-30 bg-black/50 backdrop-blur-[2px] transition-opacity hidden lg:block"
         />
       )}
 
       {/* Mobile Navigation */}
-      <nav className="sticky top-0 z-50 flex h-[80px] items-center justify-between border-b border-[#201E3D] bg-[#060419] px-5 md:px-8 lg:hidden">
+      <nav className="sticky top-0 z-50 flex h-[76px] items-center justify-between border-b border-[#201E3D] bg-[#060419] px-5 md:px-8 lg:hidden">
         <Logo className="h-[25px] w-auto fill-white" />
 
         <button
