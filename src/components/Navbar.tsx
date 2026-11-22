@@ -548,12 +548,27 @@ export const Navbar: React.FC = () => {
         {activeDropdown === 'Resources' && (
           <div className="absolute left-0 top-full w-full border-b border-[#201E3D] bg-[#0D0B28] shadow-2xl z-50">
             <div className="mx-auto max-w-screen-xl px-6 xl:px-12 py-8">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                {/* 3 Category Columns on the Left (col-span-7) */}
-                <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8">
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '2.5rem',
+                  width: '100%',
+                }}
+              >
+                {/* 3 Category Columns on the Left (takes 60% of space) */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flex: '1 1 60%',
+                    justifyContent: 'space-between',
+                    gap: '2rem',
+                    minWidth: 0,
+                  }}
+                >
                   {/* LEARN */}
-                  <div className="flex flex-col">
+                  <div style={{ flex: '1 1 0%', minWidth: 0 }}>
                     <p className="mb-4 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
                       LEARN
                     </p>
@@ -563,7 +578,7 @@ export const Navbar: React.FC = () => {
                           <Link
                             href={link.href}
                             onClick={() => setActiveDropdown(null)}
-                            className="text-[15px] font-medium text-white transition-colors hover:text-accent-pink"
+                            className="text-[15px] font-medium text-white transition-colors hover:text-accent-pink block truncate"
                           >
                             {link.label}
                           </Link>
@@ -573,7 +588,7 @@ export const Navbar: React.FC = () => {
                   </div>
 
                   {/* COMPARE */}
-                  <div className="flex flex-col">
+                  <div style={{ flex: '1 1 0%', minWidth: 0 }}>
                     <p className="mb-4 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
                       COMPARE
                     </p>
@@ -583,7 +598,7 @@ export const Navbar: React.FC = () => {
                           <Link
                             href={link.href}
                             onClick={() => setActiveDropdown(null)}
-                            className="text-[15px] font-medium text-white transition-colors hover:text-accent-pink"
+                            className="text-[15px] font-medium text-white transition-colors hover:text-accent-pink block truncate"
                           >
                             {link.label}
                           </Link>
@@ -593,7 +608,7 @@ export const Navbar: React.FC = () => {
                   </div>
 
                   {/* CONNECT */}
-                  <div className="flex flex-col">
+                  <div style={{ flex: '1 1 0%', minWidth: 0 }}>
                     <p className="mb-4 text-xs font-bold uppercase tracking-wider text-[#6F6F8A]">
                       CONNECT
                     </p>
@@ -603,7 +618,7 @@ export const Navbar: React.FC = () => {
                           <Link
                             href={link.href}
                             onClick={() => setActiveDropdown(null)}
-                            className="text-[15px] font-medium text-white transition-colors hover:text-accent-pink"
+                            className="text-[15px] font-medium text-white transition-colors hover:text-accent-pink block truncate"
                           >
                             {link.label}
                           </Link>
@@ -613,31 +628,59 @@ export const Navbar: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Prominent Featured Card on the Right (col-span-5) */}
-                <div className="lg:col-span-5">
+                {/* Prominent Featured Card on the Right (takes fixed ~400px) */}
+                <div style={{ flex: '0 0 400px', maxWidth: '420px', width: '100%' }}>
                   <a
                     href="https://www.beehiiv.com/state-of-newsletters"
                     target="_blank"
                     rel="noreferrer"
                     onClick={() => setActiveDropdown(null)}
                     className="block rounded-2xl border border-[#FF5EC4] bg-[#0E0C2B] p-6 transition-all hover:bg-[#141235] group"
+                    style={{
+                      border: '1px solid #FF5EC4',
+                      borderRadius: '16px',
+                      backgroundColor: '#0E0C2B',
+                      padding: '24px',
+                      display: 'block',
+                      textDecoration: 'none',
+                    }}
                   >
-                    <p className="text-xs font-bold uppercase tracking-wider text-[#FF5EC4] mb-3">
+                    <p className="text-xs font-bold uppercase tracking-wider text-[#FF5EC4] mb-3" style={{ color: '#FF5EC4' }}>
                       FEATURED
                     </p>
-                    <div className="flex items-center justify-between gap-4">
-                      <h4 className="text-lg xl:text-xl font-extrabold uppercase text-white tracking-tight leading-tight">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                      <h4
+                        className="text-lg xl:text-xl font-extrabold uppercase text-white tracking-tight leading-tight"
+                        style={{ color: '#ffffff', margin: 0 }}
+                      >
                         THE STATE OF NEWSLETTERS
                         <br />
                         2026
                       </h4>
-                      <div className="size-11 rounded-lg bg-[#141230] border border-[#2B274F] flex items-center justify-center text-[#FF5EC4] shrink-0 group-hover:scale-105 group-hover:border-[#FF5EC4]/50 transition-all">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <div
+                        className="size-11 rounded-lg bg-[#141230] border border-[#2B274F] flex items-center justify-center text-[#FF5EC4] shrink-0 group-hover:scale-105 group-hover:border-[#FF5EC4]/50 transition-all"
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '10px',
+                          backgroundColor: '#141230',
+                          border: '1px solid #2B274F',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#FF5EC4',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg className="w-5 h-5" style={{ width: '20px', height: '20px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7V17" />
                         </svg>
                       </div>
                     </div>
-                    <p className="mt-3 text-sm text-[#9898D2] leading-relaxed">
+                    <p
+                      className="mt-3 text-sm text-[#9898D2] leading-relaxed"
+                      style={{ color: '#9898D2', marginTop: '12px', fontSize: '14px', lineHeight: 1.5 }}
+                    >
                       The latest data, trends and innovations shaping the newsletter industry.
                     </p>
                   </a>
