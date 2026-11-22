@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-12 pb-16">
           
           {/* Left Column: Logo, Description & Newsletter Subscribe */}
-          <div className="lg:col-span-5 flex flex-col gap-6 lg:pr-8">
+          <div className="lg:col-span-4 flex flex-col gap-6 lg:pr-6">
             <div className="flex flex-col gap-3">
               <Logo className="h-7 w-auto fill-white" />
               <p className="text-sm text-secondary max-w-sm leading-relaxed">
@@ -32,49 +32,37 @@ export const Footer: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex flex-col gap-3.5 mt-2 max-w-md w-full">
-              <h3 className="text-lg md:text-xl font-bold text-white tracking-tight">
+            <div className="flex flex-col gap-3 mt-2 max-w-sm w-full">
+              <p className="text-sm font-bold text-white">
                 Get beehiiv updates delivered to your inbox.
-              </h3>
+              </p>
               {subscribed ? (
-                <div className="rounded-lg bg-surface-2 p-3.5 text-sm font-bold text-accent-pink border border-accent-pink/30">
+                <div className="rounded-lg bg-surface-2 p-3 text-xs font-bold text-accent-pink">
                   Thanks for subscribing! Check your inbox soon.
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="flex flex-col gap-3 w-full">
-                  {/* Single rounded unified input + button bar */}
-                  <div className="flex w-full items-stretch overflow-hidden rounded-lg border border-white/20 shadow-md transition-all focus-within:border-accent-pink focus-within:ring-2 focus-within:ring-accent-pink/20">
-                    <input
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="w-full bg-white px-4 py-3 text-sm font-medium text-[#060419] placeholder-[#6B7280] focus:outline-none"
-                    />
-                    <button
-                      type="submit"
-                      className="shrink-0 bg-[#3843D0] hover:bg-[#2F39BA] px-6 py-3 text-sm font-bold text-white transition-colors flex items-center justify-center whitespace-nowrap cursor-pointer active:scale-95"
-                    >
-                      Subscribe
-                    </button>
-                  </div>
-
-                  {/* Privacy Disclaimer */}
-                  <p className="text-xs text-[#9898D2] leading-relaxed">
-                    By subscribing you agree to our{' '}
-                    <Link href="/privacy" className="font-bold text-white hover:underline">
-                      Privacy Policy
-                    </Link>{' '}
-                    and provide consent to receive updates from our company.
-                  </p>
+                <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 w-full">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full rounded-md border border-subtle bg-surface-1 px-4 py-2.5 text-sm text-white placeholder-ghost focus:border-accent-pink focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="shrink-0 rounded-md bg-[#2F39BA] px-5 py-2.5 text-sm font-bold text-white hover:bg-opacity-90 transition-opacity"
+                  >
+                    Subscribe
+                  </button>
                 </form>
               )}
             </div>
           </div>
 
           {/* Right Column: Links Grid (Product, Solutions, Resources, Company, Connect) */}
-          <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
+          <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
             {footerColumns.map((col) => (
               <div key={col.title} className="flex flex-col gap-3">
                 <p className="text-xs font-bold uppercase tracking-wider text-ghost">
