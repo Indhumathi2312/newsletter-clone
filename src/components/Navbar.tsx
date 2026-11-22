@@ -267,7 +267,10 @@ export const Navbar: React.FC = () => {
         data-ref="desktop-nav"
         className="relative z-50 hidden w-full border-b border-[#201E3D] bg-[#060419] lg:block"
       >
-        <div className="mx-auto flex h-[76px] max-w-screen-xl flex-row items-center justify-between px-6 xl:px-12">
+        <div
+          className="mx-auto flex h-[92px] max-w-screen-xl flex-row items-center justify-between px-6 xl:px-12"
+          style={{ height: '92px', minHeight: '92px' }}
+        >
           {/* Left section: Logo & Nav Links */}
           <div className="flex items-center gap-8 xl:gap-10">
             <Logo className="h-[28px] w-auto fill-white" />
@@ -697,12 +700,16 @@ export const Navbar: React.FC = () => {
         <div
           aria-hidden="true"
           onClick={() => setActiveDropdown(null)}
-          className="fixed inset-0 top-[76px] z-30 bg-black/50 backdrop-blur-[2px] transition-opacity hidden lg:block"
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-[2px] transition-opacity hidden lg:block"
+          style={{ top: '92px' }}
         />
       )}
 
       {/* Mobile Navigation */}
-      <nav className="sticky top-0 z-50 flex h-[76px] items-center justify-between border-b border-[#201E3D] bg-[#060419] px-5 md:px-8 lg:hidden">
+      <nav
+        className="sticky top-0 z-50 flex items-center justify-between border-b border-[#201E3D] bg-[#060419] px-5 md:px-8 lg:hidden"
+        style={{ height: '84px', minHeight: '84px' }}
+      >
         <Logo className="h-[25px] w-auto fill-white" />
 
         <button
