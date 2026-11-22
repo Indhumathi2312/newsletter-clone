@@ -93,9 +93,9 @@ export const TestimonialQuote: React.FC = () => {
                 >
                   <div className="relative z-10 mx-auto flex w-full max-w-[755px] flex-col items-center text-center gap-6">
                     {/* Quote Text */}
-                    <blockquote className="text-lg sm:text-xl md:text-[28px] font-medium leading-relaxed md:leading-[1.3] text-white tracking-tight max-w-2xl min-h-[96px] flex items-center justify-center">
+                    <p className="text-lg sm:text-xl md:text-[28px] font-medium leading-relaxed md:leading-[1.3] text-white tracking-tight max-w-2xl min-h-[96px] flex items-center justify-center !border-0 !border-none !p-0 !m-0">
                       &ldquo;{item.quote}&rdquo;
-                    </blockquote>
+                    </p>
 
                     {/* Author Profile */}
                     <div className="mt-2 flex flex-col items-center gap-3">

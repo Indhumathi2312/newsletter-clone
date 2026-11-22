@@ -198,6 +198,15 @@ body {
   background: transparent;
 }
 
+/* Reset vendor blockquote left border line */
+blockquote {
+  border: none !important;
+  border-left: none !important;
+  border-left-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 
 
 
