@@ -152,13 +152,13 @@ export const TestimonialQuote: React.FC = () => {
             </button>
 
             {/* Active Dot Indicators */}
-            <div className="flex items-center gap-2 px-2">
+            <div className="flex items-center gap-2 px-2 flex-wrap justify-center max-w-[280px]">
               {featuredTestimonials.map((_, dotIdx) => (
                 <button
                   key={dotIdx}
                   type="button"
                   onClick={() => setCurrentIndex(dotIdx)}
-                  aria-label={`Go to slide ${dotIdx + 1}`}
+                  aria-label={`Go to slide ${dotIdx + 1} of ${length}`}
                   className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                     dotIdx === currentIndex
                       ? 'w-7 bg-[#FF5EC4]'
